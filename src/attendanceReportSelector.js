@@ -74,7 +74,7 @@ constructor(props) {
               data={this.state.recepients}
               extraData={this.state}
               renderItem={this._renderList}
-              />            
+          />            
         }
         </Content>
             

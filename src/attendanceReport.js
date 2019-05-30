@@ -57,7 +57,7 @@ constructor(props) {
         console.log("date2: "+this.state.endDate.getFullYear()+'/'+parseInt(this.state.endDate.getMonth()+1)+'/'+this.state.endDate.getDate());
         data = {
             "standard": this.state.standard,
-            "batch_id": this.props.state.batch_id,
+            "batch_id": this.state.batch_id,
             "start_date": this.state.startDate.getFullYear()+'-'+parseInt(this.state.startDate.getMonth()+1)+'-'+this.state.startDate.getDate(),
             "end_date": this.state.endDate.getFullYear()+'-'+parseInt(this.state.endDate.getMonth()+1)+'-'+this.state.endDate.getDate()
         };

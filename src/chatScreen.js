@@ -60,6 +60,7 @@ export default class Example extends Component {
 
 
   componentDidMount(){
+    console.log("props: "+JSON.stringify(this.props.navigation.state.params));
     const db = firebase.firestore()
     db.collection('chats')
       .doc('e7ypHneThKVjoa5jcaYb')

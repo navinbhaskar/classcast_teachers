@@ -13,6 +13,7 @@ constructor(props) {
     this.state = {
     active: false,
     random: false,
+    isReady: false,
     recepients: [
       {
         "chat_id": "e7ypHneThKVjoa5jcaYb",
@@ -34,6 +35,7 @@ constructor(props) {
 }
 
 _renderList({item, index}){
+  
     return (
         <ListItem style={{flexDirection:'row', width: '100%', flex:16}}
                   onPress={() => {
@@ -45,8 +47,7 @@ _renderList({item, index}){
             <View style={{flex:11, justifyContent:'flex-start'}}>
                 <Text style={{alignSelf:'flex-start'}} >{item.display_name}</Text>
                 <View style={{flexDirection:'row'}}>
-                    {item.display_extra_info.students && <Text style={{fontSize:10, color:'grey'}}>{item.display_extra_info.students} Students</Text>}
-                    <Text style={{fontSize:10, color:'grey', marginLeft:5}}>Class {item.display_extra_info.class}</Text>
+                    <Text style={{fontSize:10, color:'grey', marginLeft:5}}>Class {item.type=='group'? item.display_extra_info.class: ''}</Text>
                 </View>
             </View>
             <Icon type="FontAwesome" name="chevron-right" active={false} style={{fontSize: 15, color: 'black', margin: 5, flex:2}} />
@@ -59,10 +60,12 @@ _renderList({item, index}){
   componentDidMount(){
     const db = firebase.firestore()
     db.collection('chatLists')
-      .doc('anuragc')
+      .doc('rohit1098')
         .onSnapshot((doc)=> {
-          console.log(JSON.stringify(doc.data().chats))    
-          this.setState({recepients: doc.data().chats })
+          console.log("chats: "+JSON.stringify(doc.data().chats));
+          this.setState({recepients: doc.data().chats,
+                        isReady: true
+           })
         }),
         (error) => {
         console.error(error);
@@ -76,12 +79,13 @@ _renderList({item, index}){
         
         
         <Content style={{padding:5}}>
+        { this.state.isReady &&
             <FlatList 
                 data={this.state.recepients}
                 extraData={this.state}
                 renderItem={this._renderList}
                 />  
-                     
+         }            
         </Content>
         <View style={{ flex: 1 }}>
           <Fab
