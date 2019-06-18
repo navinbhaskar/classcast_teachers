@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Button, Text, H1, Icon, H3, DatePicker , ListItem, Picker, Form, ToastAndroid} from 'native-base';
-import {View, Image, FlatList, TouchableNativeFeedback } from 'react-native';
+import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import axios from 'axios';
 import {NavigationActions} from 'react-navigation';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default class attendanceReport extends Component {
 
@@ -112,8 +114,8 @@ constructor(props) {
                 }}
             >
             <ListItem style={{flexDirection:'row', width: '100%', flex:8}} >
-                <Text style={{flex:4}}>{item.name}</Text>
-                <Text style={{flex:3}}>{Math.round(item.class*100/(this.state.total_class+.000001),1)} %</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex:4}}>{item.name}</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex:3}}>{Math.round(item.class*100/(this.state.total_class+.000001),1)} %</Text>
                 <Icon type="FontAwesome" name="chevron-right" active={false} style={{fontSize: 15, color: 'black', margin: 5, flex:1}} /> 
             </ListItem>
             </TouchableNativeFeedback>
@@ -126,7 +128,7 @@ constructor(props) {
         console.log("working00: "+this.state.batch_id+'||'+this.state.standard);
         axios.get(`https://classcast-198812.appspot.com/teachersapp/batch_list_without_student_count`)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
+            console.log("value1: "+JSON.stringify(response.data));
             this.setState({batchList: response.data});
             this.setState({isReady: true});
         }.bind(this))
@@ -177,6 +179,7 @@ constructor(props) {
     //console.log("date: "+this.state.endDate.getFullYear()+'/'+parseInt(this.state.today.getMonth()+1)+'/'+this.state.endDate.getDate());
     return (
       <Container style={{backgroundColor:'white', flex: 1}}>
+      <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.06 * SCREEN_WIDTH, paddingBottom: 0.01 * SCREEN_HEIGHT, paddingTop: 0.05 * SCREEN_HEIGHT, color: 'black', textAlign: 'center'}}>Attendance Report</Text> 
         <Content style={{padding:5}}>
             <Form>
             { this.state.isReady &&
@@ -186,7 +189,7 @@ constructor(props) {
                 onValueChange={this.onValueChange.bind(this)}
                 >
                     {this.state.batchList.map((item, key)=>(
-                        <Picker.Item label={item.batch_id+', Class- '+item.standard} value={item.batch_id+','+item.standard} key={item.batch_id+item.standard} />)
+                        <Picker.Item label={item.fields.batch_id+', Class- '+item.fields.standard} value={item.fields.batch_id+','+item.fields.standard} key={item.fields.batch_id+item.fields.standard} />)
                     )}
                 </Picker>
               }

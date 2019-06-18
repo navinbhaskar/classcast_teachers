@@ -20,7 +20,7 @@ import {
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import axios from "axios";
-
+import Video from "react-native-video";
 
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -59,7 +59,17 @@ export default class Login extends Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => this.props.navigation.navigate('HomeStack'))
+      .then(() => {
+        let jwtToken = firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+              user.getIdToken().then(idToken => {
+                  console.log("nsajaskfif: "+idToken);
+                  axios.defaults.headers.common['Authorization'] = idToken;
+              })
+            }
+          });
+        this.props.navigation.navigate('HomeStack');
+      })
       .catch(error => {
         this.setState({ errorMessage: error.message });
         console.log(error)
@@ -88,23 +98,36 @@ export default class Login extends Component {
     } : {};
 
     return (
-      <ScrollView style={{backgroundColor: '#fef6e8'}}
-        contentContainerStyle ={{backgroundColor: '#fef6e8'}}
+      <View>
+
+      <Video
+        source={require("./Unicornsandhorses.mp4")}
+        style={styles.backgroundVideo}
+        muted={true}
+        repeat={true}
+        resizeMode={"cover"}
+        rate={1.0}
+        ignoreSilentSwitch={"obey"}
+        />
+
+      <ScrollView 
         scrollEnabled={true}
         keyboardShouldPersistTaps="handled">
           <View style = {styles.container}>
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
                placeholder = "Username"
-               placeholderTextColor = "#9a73ef"
+               placeholderTextColor = "white"
+               inputStyle={styles.inputStyle}
                autoCapitalize = "none"
                onChangeText = {this.handleEmail}/>
             
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
                placeholder = "Password"
-               placeholderTextColor = "#9a73ef"
+               placeholderTextColor = "white"
                autoCapitalize = "none"
+               secureTextEntry = {true}
                onChangeText = {this.handlePassword}/>
             
             <TouchableOpacity
@@ -112,10 +135,11 @@ export default class Login extends Component {
                onPress = {() => 
                 this.handleSignUp()
                }>
-               <Text style = {styles.submitButtonText}> Submit </Text>
+               <Text style = {styles.submitButtonText}> Get Started </Text>
             </TouchableOpacity>
          </View>
       </ScrollView>
+      </View>
     );
   }
 }
@@ -123,21 +147,53 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
    container: {
-      paddingTop: 23
+      marginTop: 0.5 * SCREEN_HEIGHT
    },
    input: {
-      margin: 15,
-      height: 40,
-      borderColor: '#7a42f4',
-      borderWidth: 1
+      fontFamily: 'Montserrat-Bold',
+      fontSize: 0.04 * SCREEN_WIDTH,
+      color: 'white',
+      textAlign: 'center',
+      alignSelf:'center',
+      borderRadius: 0.2 * SCREEN_WIDTH,
+      width: '70%',
+      marginTop: 0.05 * SCREEN_HEIGHT,
+      height: 0.07 * SCREEN_HEIGHT,
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+      alignItems: 'center',
+      justifyContent: 'center',
    },
    submitButton: {
-      backgroundColor: '#7a42f4',
-      padding: 10,
-      margin: 15,
-      height: 40,
+      backgroundColor: '#fa6432',
+      alignSelf:'center',
+      borderRadius: 0.2 * SCREEN_WIDTH,
+      width: '70%',
+      marginTop: 0.05 * SCREEN_HEIGHT,
+      height: 0.07 * SCREEN_HEIGHT,
+      alignItems: 'center',
+      justifyContent: 'center',
    },
    submitButtonText:{
-      color: 'white'
-   }
+    fontFamily: 'Montserrat-Bold',
+      color: 'white',
+      textAlign: 'center',
+      alignItems: 'center'
+   },
+   backgroundVideo: {
+    height: SCREEN_HEIGHT,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    alignItems: "stretch",
+    bottom: 0,
+    right: 0
+  },
+  inputStyle: {
+    flex: 1,
+    marginLeft: 10,
+    fontFamily: 'light',
+    color: 'white',
+   fontSize: 0.03 * SCREEN_WIDTH,
+   
+  },
 });

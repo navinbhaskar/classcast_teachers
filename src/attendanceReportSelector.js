@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem} from 'native-base';
-import {View, Image, FlatList, TouchableNativeFeedback } from 'react-native';
+import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import axios from "axios";
 import {NavigationActions} from 'react-navigation';
+
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default class messageRecepients extends Component {
 
@@ -29,21 +33,20 @@ constructor(props) {
     return (
         <ListItem style={{flexDirection:'row', width: '100%', flex:16}}
                     onPress={() => {
-                      const navigateAction = NavigationActions.navigate({
-                      routeName: 'Report',
-                      params: {
-                        batch_id: item.batch_id,
-                        standard: item.standard
-                      },
-                    });
-                    this.props.navigation.dispatch(navigateAction);
+                      this.props.navigation.navigate('attendanceReport', {}, NavigationActions.navigate({ 
+                          routeName: 'Report',
+                          params: {
+                            batch_id: item.batch_id,
+                            standard: item.standard
+                          },
+                        }));
                 }}>
             <Icon type="FontAwesome" name="group" active={false} style={{fontSize: 20, color: 'black', margin: 5, flex:3}} /> 
             <View style={{flex:11, justifyContent:'flex-start'}}>
-                <Text style={{alignSelf:'flex-start'}} >{item.batch_id}</Text>
+                <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, alignSelf:'flex-start'}} >{item.batch_id}</Text>
                 <View style={{flexDirection:'row'}}>
-                    <Text style={{fontSize:10, color:'grey'}}>{item.student_count} Students</Text>
-                    <Text style={{fontSize:10, color:'grey', marginLeft:5}}>Class {item.standard}</Text>
+                    <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.03 * SCREEN_WIDTH, color:'grey'}}>{item.student_count} Students</Text>
+                    <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.03 * SCREEN_WIDTH, color:'grey', marginLeft:5}}>Class {item.standard}</Text>
                 </View>
             </View>
             <Icon type="FontAwesome" name="chevron-right" active={false} style={{fontSize: 15, color: 'black', margin: 5, flex:2}} /> 
@@ -68,6 +71,7 @@ constructor(props) {
   render() {
     return (
       <Container style={{backgroundColor:'white', flex: 1}}>
+      <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.06 * SCREEN_WIDTH, paddingBottom: 0.01 * SCREEN_HEIGHT, paddingTop: 0.05 * SCREEN_HEIGHT, color: 'black', textAlign: 'center'}}>Attendance Report</Text> 
         <Content style={{padding:5}}>
         { this.state.isReady &&
           <FlatList 

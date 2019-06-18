@@ -1,53 +1,55 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Fab} from 'native-base';
-import {View, Image, FlatList, TouchableNativeFeedback } from 'react-native';
+import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import firebase from 'react-native-firebase';
+import axios from 'axios';
+
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height
+
 export default class messageRecepients extends Component {
 
-static navigationOptions = {
-    header: null,
-    };
-constructor(props) {
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Admin Actions',
+    headerStyle: {
+      backgroundColor: '#353666',
+    },
+    style: {
+      backgroundColor: '#353666',
+      height: 0.1 * SCREEN_HEIGHT
+    },
+    headerTintColor: '#fff'
+  })
+
+
+  constructor(props) {
     super(props);
     this._renderList = this._renderList.bind(this);
     this.state = {
     active: false,
     random: false,
     isReady: false,
-    recepients: [
-      {
-        "chat_id": "e7ypHneThKVjoa5jcaYb",
-        "users": [
-          "abcd1234",
-          "somebody1234",
-          "user123"
-        ],
-        "type": "group",
-        "display_name": "Batch - 147",
-        "last_updated": 1558957946,
-        "display_extra_info": {
-          "class": 12,
-          "students": 56
-        }
-      }
-    ]
+    recepients: []
     }
 }
 
 _renderList({item, index}){
-  
+    console.log("data: "+JSON.stringify(item));
     return (
         <ListItem style={{flexDirection:'row', width: '100%', flex:16}}
                   onPress={() => {
                     this.props.navigation.navigate('chatScreen', {
-                      name: item.display_name,
+                      name: item.name,
+                      chat_id: item.chat_id
                     });
             }}>
             <Icon type="FontAwesome" name={(item.type=="group")? "group": "user"} active={false} style={{fontSize: 20, color: 'black', margin: 5, flex:3, alignSelf:'center'}} /> 
             <View style={{flex:11, justifyContent:'flex-start'}}>
-                <Text style={{alignSelf:'flex-start'}} >{item.display_name}</Text>
+                <Text style={{alignSelf:'flex-start'}} >{item.name}</Text>
                 <View style={{flexDirection:'row'}}>
-                    <Text style={{fontSize:10, color:'grey', marginLeft:5}}>Class {item.type=='group'? item.display_extra_info.class: ''}</Text>
+                    <Text style={{fontSize:10, color:'grey'}}>{ item.type=="student"? item.batch_id: '' }</Text>
+                    <Text style={{fontSize:10, color:'grey', marginLeft:5}}>Class {item.standard}</Text>
                 </View>
             </View>
             <Icon type="FontAwesome" name="chevron-right" active={false} style={{fontSize: 15, color: 'black', margin: 5, flex:2}} />
@@ -58,6 +60,16 @@ _renderList({item, index}){
 }
 
   componentDidMount(){
+
+    axios.get(`https://classcast-198812.appspot.com/teachersapp/chat_list/`)
+    .then((res)=> {
+      console.log("chat_list: "+JSON.stringify(res.data));
+      this.setState({recepients: res.data.reverse(),
+                        isReady: true
+           })
+    })
+    .catch(err=> {console.log("errorrr: "+err)})
+
     const db = firebase.firestore()
     db.collection('chatLists')
       .doc('rohit1098')
@@ -74,11 +86,9 @@ _renderList({item, index}){
 
   render() {
     return (
-      <Container style={{backgroundColor:'white', flex: 1}}>
-        <Header/>
+      <Container style={{ flex: 1}}>
         
-        
-        <Content style={{padding:5}}>
+        <Content style={{padding:2}}>
         { this.state.isReady &&
             <FlatList 
                 data={this.state.recepients}
@@ -87,7 +97,7 @@ _renderList({item, index}){
                 />  
          }            
         </Content>
-        <View style={{ flex: 1 }}>
+        <View style={{ position: 'absolute', bottom: 0, right: 0}}>
           <Fab
             active={this.state.active}
             direction="up"

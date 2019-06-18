@@ -14,7 +14,7 @@ import {GiftedChat, Bubble, SystemMessage, Message} from 'react-native-gifted-ch
 import {Icon, Button} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
-
+import axios from 'axios';
 
 export default class Example extends Component {
   static navigationOptions= ({ navigation }) => ({
@@ -63,10 +63,12 @@ export default class Example extends Component {
     console.log("props: "+JSON.stringify(this.props.navigation.state.params));
     const db = firebase.firestore()
     db.collection('chats')
-      .doc('e7ypHneThKVjoa5jcaYb')
+      .doc(this.props.navigation.state.params.chat_id)
         .onSnapshot((doc)=> {
-          console.log(JSON.stringify(doc.data().messages))
-          this.setState({messages: doc.data().messages.reverse()})     
+          if (doc.exists) {
+            console.log("ugkvu: "+JSON.stringify(doc.data().messages))
+            this.setState({messages: doc.data().messages.reverse()})     
+          }
         }),
         (error) => {
         console.error(error);
@@ -149,7 +151,7 @@ export default class Example extends Component {
         },
         image: link
       }
-      const db = firebase.firestore().collection('chats').doc('e7ypHneThKVjoa5jcaYb');
+      const db = firebase.firestore().collection('chats').doc(this.props.navigation.state.params.chat_id);
       db.update({
         messages: firebase.firestore.FieldValue.arrayUnion(message)
       })
@@ -168,7 +170,7 @@ export default class Example extends Component {
         doc: link,
         docName: name
       }
-      const db = firebase.firestore().collection('chats').doc('e7ypHneThKVjoa5jcaYb');
+      const db = firebase.firestore().collection('chats').doc(this.props.navigation.state.params.chat_id);
       db.update({
         messages: firebase.firestore.FieldValue.arrayUnion(message)
       })
@@ -179,11 +181,19 @@ export default class Example extends Component {
   onSend(messages) {
     console.log("Message :"+ JSON.stringify(messages[0]));
     messages[0].createdAt = Math.floor(Date.now());
-    const db = firebase.firestore().collection('chats').doc('e7ypHneThKVjoa5jcaYb');
+    const db = firebase.firestore().collection('chats').doc(this.props.navigation.state.params.chat_id);
     db.update({
       messages: firebase.firestore.FieldValue.arrayUnion(messages[0])
     })
    
+    axios.post(`https://classcast-198812.appspot.com/teachersapp/update_chat_list`, { "chat_id": this.props.navigation.state.params.chat_id })
+    .then(res=>{
+      console.log("update_chat_list: "+JSON.stringify(res))
+    })
+    .catch(err=> {
+      console.log("update_chat_list"+err);
+    })
+
     console.log("Message123 :"+ JSON.stringify(messages));
   }
 
@@ -198,12 +208,16 @@ export default class Example extends Component {
   }
 
   uploadFile(uri, name, type, counter){
+
     let path= 'something/' + name;
+    console.log("uploadFile"+path);
+    console.log("uploadFile"+uri);
     firebase.storage()
         .ref(path)
         .putFile(uri).on(
             firebase.storage.TaskEvent.STATE_CHANGED,
             (snapshot) => {
+              console.log("uploadFileworking");
             let state = {};
             this.setState({
               progress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 // Calculate progress percentage
@@ -238,10 +252,9 @@ export default class Example extends Component {
       height: 400,
     }).then(image => {
       console.log("auaa");
-      console.log(image);
       this.createTempMsg(image.path, image.modificationDate, "image")
       this.uploadFile(image.path, image.modificationDate, "image", this.state.counter) 
-      this.setState({counter: this.state.counter +1}) 
+      //this.setState({counter: this.state.counter +1}) 
     })
   }
 

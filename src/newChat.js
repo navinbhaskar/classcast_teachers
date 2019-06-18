@@ -34,9 +34,24 @@ constructor(props) {
       return (
         <ListItem style={{flexDirection:'row', width: '100%', flex:16}}
                   onPress={() => {
-                    this.props.navigation.navigate('chatScreen', {
-                      name: item.batch_id+' class-'+item.standard,
-                    });
+                    data = {
+                      "display_name": item.batch_id,
+                      "standard": item.standard,
+                      "type": 'group'
+                    };
+                    axios.post(`https://classcast-198812.appspot.com/teachersapp/store_chat_list_data`, data)
+                    .then(res=> {
+                      console.log("dsknkds: "+JSON.stringify(res.data));
+
+                      axios.post(`https://classcast-198812.appspot.com/teachersapp/start_chat`, { "chat_id": res.data.chat_id })
+                      .then(result=> {
+                        this.props.navigation.navigate('chatScreen', {
+                          name: item.batch_id,
+                          chat_id: res.data.chat_id
+                        });
+                      })
+
+                    })
             }}>
             <Icon type="FontAwesome" name={(item.type=="student")? "user": "group"} active={false} style={{fontSize: 20, color: 'black', margin: 5, flex:2}} /> 
           <View style={{flex:11, justifyContent:'flex-start'}}>
@@ -51,12 +66,30 @@ constructor(props) {
       );
     }
     else if(item.type == 'student') {
+
       return (
       <ListItem style={{flexDirection:'row', width: '100%', flex:16}}
                   onPress={() => {
-                    this.props.navigation.navigate('chatScreen', {
-                      name: item.name,
-                    });
+                    data = {
+                      "display_name": item.name,
+                      "username": item.username,
+                      "standard": item.standard,
+                      "type": 'student'
+                    };
+                    axios.post(`https://classcast-198812.appspot.com/teachersapp/store_chat_list_data`, data)
+                    .then(res=> {
+                      console.log("dsknkds: "+JSON.stringify(res.data));
+
+                      axios.post(`https://classcast-198812.appspot.com/teachersapp/start_chat`, { "chat_id": res.data.chat_id })
+                      .then(result=> {
+                        this.props.navigation.navigate('chatScreen', {
+                          name: item.name,
+                          chat_id: res.data.chat_id
+                        });
+                      })
+
+                    })
+
             }}>
             <Icon type="FontAwesome" name={(item.type=="student")? "user": "group"} active={false} style={{fontSize: 20, color: 'black', margin: 5, flex:2}} /> 
           <View style={{flex:11, justifyContent:'flex-start'}}>

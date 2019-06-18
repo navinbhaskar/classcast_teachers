@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {createDrawerNavigator, createStackNavigator, createAppContainer, createSwitchNavigator, createMaterialTopTabNavigator} from 'react-navigation';
+import {createDrawerNavigator, createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator, createMaterialTopTabNavigator} from 'react-navigation';
 import Home from './home';
 import messageCreater from './messageCreater';
 import MessageRecepients from './messageRecepients';
@@ -15,7 +15,18 @@ import addBatch from './addBatch';
 import authCheck from './authCheck';
 import Login from './Login';
 import newChat from './newChat';
+import addStudent from './addStudent';
+import editStudentData from './editStudentData';
+import CustomTabBar from './customBarBottom';
+import studentAdmin from './studentAdmin';
+import batchAdmin from './batchAdmin';
+import {View, Text, Image, Dimensions, TouchableNativeFeedback } from 'react-native';
+import { Icon } from "native-base";
 
+
+const screen = Dimensions.get('window'),
+  vh = screen.height / 100,
+  vw = screen.width / 100;
 
 export const messageStack = createStackNavigator({
   "New Channel": { screen: newChat},
@@ -25,20 +36,60 @@ export const messageStack = createStackNavigator({
   initialRouteName: 'MessageRecepients',
 })
 
+export const adminTopNavigator = createBottomTabNavigator({
+  studentAdmin: { screen: studentAdmin, navigationOptions: {
+    tabBarIcon: ({ tintColor }) => (
+      <View Style={{height: 5 * vh, width: 5 * vh, justifyContent: 'center', alignItems: 'center', elevation: 3}}>
+         <Icon type="FontAwesome" name={"user"} style={{ fontSize: 15, alignSelf: 'center'}} />
+        
+        <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Manage Students</Text>
+      </View>
+      )
+  } },
+  batchAdmin: { screen: batchAdmin, navigationOptions: {
+    tabBarIcon: ({ tintColor }) => (
+      <View Style={{height: 5 * vh, width: 5 * vh,  justifyContent: 'center', alignItems: 'center'}}>
+         <Icon type="FontAwesome" name={"university"} style={{ fontSize: 15, alignSelf: 'center'}}/>
+        <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Manage Batches</Text>
+      </View>
+      )
+  } },
+  
+}, {
+  tabBarComponent: props => (
+  <CustomTabBar
+      {...props}/> ),
+  tabBarOptions: {
+    activeTintColor: "#6044f0",
+    inactiveTintColor: "#c1c8db",
+    inactiveTintColor: "#aeadb2",
+    style: {
+    backgroundColor: '#222126',
+  },
+  },
+  lazy: true,
+  initialRouteName: 'studentAdmin',
+  navigationOptions: {
+        header: null,
+    }
+})
+
+
 export const adminStack = createStackNavigator({
-  adminHome: { screen: admin},
+  adminHome: { screen: adminTopNavigator},
+  addStudent: { screen: addStudent },
+  editStudentData: { screen: editStudentData },
   manageBatch: {screen: manageBatch},
   addBatch: {screen: addBatch}
 }, {
   initialRouteName: 'adminHome',
 })
 
-export const newAttendance = createStackNavigator({
-  batchList: { screen: batchListAttendance},
+export const newAttendanceStack = createStackNavigator({
   takeAttendance: { screen: takeAttendance},
   studentDetails: { screen: studentDetails }
 }, {
-  initialRouteName: 'batchList',
+  initialRouteName: 'takeAttendance',
   headerMode: 'none',
       navigationOptions: {
           headerVisible: false,
@@ -46,12 +97,11 @@ export const newAttendance = createStackNavigator({
       }
 })
 
-export const attendanceReports = createStackNavigator({
-  Selector: { screen: attendanceReportSelector},
+export const attendanceReportsStack = createStackNavigator({
   Report: { screen: attendanceReport},
   studentDetails: { screen: studentDetails }
 }, {
-  initialRouteName: 'Selector',
+  initialRouteName: 'Report',
   headerMode: 'none',
       navigationOptions: {
           headerVisible: false,
@@ -59,18 +109,52 @@ export const attendanceReports = createStackNavigator({
       }
 })
 
-export const attendanceStack = createMaterialTopTabNavigator({
-  "New Attendance": { screen: newAttendance},
-  "Attendance Report": {screen: attendanceReports},
+
+export const attendanceStack = createBottomTabNavigator({
+  "New Attendance": { screen: batchListAttendance, navigationOptions: {
+    tabBarIcon: ({ tintColor }) => (
+      <View Style={{height: 5 * vh, width: 5 * vh, justifyContent: 'center', alignItems: 'center', elevation: 3}}>
+         <Icon type="FontAwesome" name={"user-plus"} style={{ fontSize: 15, alignSelf: 'center'}} />
+        
+        <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>New Attendance</Text>
+      </View>
+      )
+  } },
+  "Attendance Report": { screen: attendanceReportSelector, navigationOptions: {
+    tabBarIcon: ({ tintColor }) => (
+      <View Style={{height: 5 * vh, width: 5 * vh,  justifyContent: 'center', alignItems: 'center'}}>
+         <Icon type="FontAwesome" name={"bar-chart"} style={{ fontSize: 15, alignSelf: 'center'}}/>
+        <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Attendance Report</Text>
+      </View>
+      )
+  } },
+  
 }, {
+  tabBarComponent: props => (
+  <CustomTabBar
+      {...props}/> ),
+  tabBarOptions: {
+    activeTintColor: "#6044f0",
+    inactiveTintColor: "#c1c8db",
+    inactiveTintColor: "#aeadb2",
+    style: {
+    backgroundColor: '#222126',
+  },
+  },
+  lazy: true,
   initialRouteName: 'New Attendance',
+  navigationOptions: {
+        header: null,
+    }
 })
 
 export const HomeStack = createStackNavigator({
     Home: { screen: Home },
     Message: { screen: messageStack},
     Attendance: {screen: attendanceStack},
-    Admin: {screen: adminStack}
+    NewAttendance: {screen: newAttendanceStack},
+    attendanceReport: { screen: attendanceReportsStack },
+    Admin: {screen: adminStack},
   }, {
     initialRouteName: 'Home',
     headerMode: 'none',
