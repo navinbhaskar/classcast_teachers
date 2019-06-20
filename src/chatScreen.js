@@ -210,7 +210,7 @@ export default class Example extends Component {
   uploadFile(uri, name, type, counter){
 
     let path= 'something/' + name;
-    console.log("uploadFile"+path);
+    console.log("uploadFile"+path+"||"+uri);
     console.log("uploadFile"+uri);
     firebase.storage()
         .ref(path)
@@ -251,10 +251,10 @@ export default class Example extends Component {
       width: 300,
       height: 400,
     }).then(image => {
-      console.log("auaa");
+      console.log("auaaaa: "+image.path);
       this.createTempMsg(image.path, image.modificationDate, "image")
       this.uploadFile(image.path, image.modificationDate, "image", this.state.counter) 
-      //this.setState({counter: this.state.counter +1}) 
+      this.setState({counter: this.state.counter +1}) 
     })
   }
 

@@ -73,7 +73,7 @@ export default class Home extends Component {
 
     render() {
       const  gradientHeight=SCREEN_HEIGHT;
-    const gradientBackground  = '#353666';
+    const gradientBackground  = '#e2e2e2';
         const data = Array.from({ length: gradientHeight });
     return (
       <Container style={{backgroundColor:'#f7f8fa', flex: 1}}>
@@ -94,23 +94,23 @@ export default class Home extends Component {
                 ))}
         <Content style={{ zIndex: 3}}>
             <View style={{ borderRadius: 0.02 * SCREEN_WIDTH, marginTop: 0.05 * SCREEN_HEIGHT, marginBottom: 0.05 * SCREEN_HEIGHT, width: '90%', alignSelf: 'center'}}>
-                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.07 * SCREEN_WIDTH , color: 'white', marginLeft:0.05 * SCREEN_WIDTH, marginTop: 0.01 * SCREEN_HEIGHT }}>{this.state.hour < 12 ? `Good Morning, Sir` : this.state.hour < 17 ? `Good Afternoon, Sir` : `Good Evening, Sir`}</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.07 * SCREEN_WIDTH , color: 'black', marginLeft:0.05 * SCREEN_WIDTH, marginTop: 0.01 * SCREEN_HEIGHT }}>{this.state.hour < 12 ? `Good Morning, Sir` : this.state.hour < 17 ? `Good Afternoon, Sir` : `Good Evening, Sir`}</Text>
                 <View style={{flexDirection:'row'}}>
-                    <View style={{height: 0.26 * SCREEN_WIDTH, width: 0.26 * SCREEN_WIDTH, borderRadius: 0.13 * SCREEN_WIDTH, backgroundColor:"white", marginLeft:0.05 * SCREEN_WIDTH, marginTop: 0.02 * SCREEN_HEIGHT }}>
+                    <View style={{height: 0.26 * SCREEN_WIDTH, width: 0.26 * SCREEN_WIDTH, borderRadius: 0.13 * SCREEN_WIDTH, backgroundColor:"black", marginLeft:0.05 * SCREEN_WIDTH, marginTop: 0.02 * SCREEN_HEIGHT }}>
                         <Image
                             source={{uri: this.state.photo}}
-                            style={{height: 0.26 * SCREEN_WIDTH, width: 0.26 * SCREEN_WIDTH, borderRadius: 0.13*SCREEN_WIDTH, borderWidth: 3, backgroundColor: '#F3BA1D', borderColor: 'white'}}
+                            style={{height: 0.26 * SCREEN_WIDTH, width: 0.26 * SCREEN_WIDTH, borderRadius: 0.13*SCREEN_WIDTH, borderWidth: 1, backgroundColor: '#f32a76', borderColor: 'black'}}
                             />
                     </View>
                     <View style={{ marginLeft:0.05 * SCREEN_WIDTH, marginTop: 0.01 * SCREEN_HEIGHT, marginBottom: 0.03 * SCREEN_HEIGHT}}>
-                        <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.06 * SCREEN_WIDTH, color:'white', marginBottom: 10}}>{this.state.name}</Text>
+                        <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.06 * SCREEN_WIDTH, color:'black', marginBottom: 10}}>{this.state.name}</Text>
                         <View style={{flexDirection: 'row', margin: 0.01 * SCREEN_WIDTH,  width: '80%', alignItems: 'center'}}>
-                            <Icon type="FontAwesome" name="users" style={{color:'white', margin: 5}} />
-                            <Text style= {{color: 'white',fontFamily: 'Montserrat-Regular', fontSize: 0.02 * SCREEN_HEIGHT}}>{this.state.student_count+ ` Students`}</Text>
+                            <Icon type="FontAwesome" name="users" style={{ fontSize: 0.05 * SCREEN_WIDTH, color:'black', margin: 5}} />
+                            <Text style= {{color: 'black',fontFamily: 'Montserrat-Regular', fontSize: 0.02 * SCREEN_HEIGHT}}>{this.state.student_count+ ` Students`}</Text>
                         </View>
                         <View style={{flexDirection: 'row', margin: 0.01 * SCREEN_WIDTH,  width: '80%', alignItems: 'center'}}>
-                            <Icon type="FontAwesome" name="play" style={{ color:'white', margin: 5 }} />
-                            <Text style= {{color: 'white',fontFamily: 'Montserrat-Regular', fontSize: 0.02 * SCREEN_HEIGHT}}>{this.state.course_count+` Courses`}</Text>
+                            <Icon type="FontAwesome" name="play" style={{ fontSize: 0.05 * SCREEN_WIDTH, color:'black', margin: 5 }} />
+                            <Text style= {{color: 'black',fontFamily: 'Montserrat-Regular', fontSize: 0.02 * SCREEN_HEIGHT}}>{this.state.course_count+` Courses`}</Text>
                         </View>
                     </View>
                 </View>
@@ -118,9 +118,9 @@ export default class Home extends Component {
             <View style={{width: '100%', alignItems: "center", justifyContent: 'center', backgroundColor: 'white', paddingTop: 0.1 * SCREEN_HEIGHT, borderTopRightRadius: 0.05 * SCREEN_WIDTH, borderTopLeftRadius: 0.05 * SCREEN_WIDTH}}>
                 <View style={{flexDirection:'row'}}>
         
-                    <Button onPress={() => this.props.navigation.navigate('Message')} style={{height: 0.3 * SCREEN_WIDTH, width: 0.3 * SCREEN_WIDTH, flexDirection:'column' , elevation:10, borderRadius: 5, backgroundColor: '#353666', opacity: 1, margin: 5, alignItems: 'center', justifyContent: 'center'}}>
-                        <Icon type="FontAwesome" name="paper-plane" style={{ color:'white', opacity: 1, marginBottom: 0.02 * SCREEN_HEIGHT}} />
-                        <Text style= {{color: 'white', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Communication</Text>
+                    <Button onPress={() => this.props.navigation.navigate('Message')} style={{height: 0.3 * SCREEN_WIDTH, width: 0.3 * SCREEN_WIDTH, flexDirection:'column' , elevation:10, borderRadius: 5, backgroundColor: '#ffffff', opacity: 1, margin: 5, alignItems: 'center', justifyContent: 'center'}}>
+                        <Icon type="FontAwesome" name="paper-plane" style={{ color:'#f32a76', opacity: 1, marginBottom: 0.02 * SCREEN_HEIGHT}} />
+                        <Text style= {{color: '#f32a76', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Communication</Text>
                     </Button>
 
                     <Button 
@@ -130,19 +130,19 @@ export default class Home extends Component {
                         });
                         this.props.navigation.dispatch(navigateAction); 
                         }} 
-                        style={{height: 0.3 * SCREEN_WIDTH, flexDirection:'column' , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#353666', margin: 5, alignItems: 'center', justifyContent: 'center', marginLeft: 0.05 * SCREEN_WIDTH, marginBottom: 0.05 * SCREEN_WIDTH}}>
-                        <Icon type="FontAwesome" name="address-book" style={{fontSize: 30, color:'white', marginBottom: 0.02 * SCREEN_HEIGHT}} />
-                        <Text style= {{color: 'white', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Attendance</Text>
+                        style={{height: 0.3 * SCREEN_WIDTH, flexDirection:'column' , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#ffffff', margin: 5, alignItems: 'center', justifyContent: 'center', marginLeft: 0.05 * SCREEN_WIDTH, marginBottom: 0.05 * SCREEN_WIDTH}}>
+                        <Icon type="FontAwesome" name="address-book" style={{fontSize: 30, color:'#f32a76', marginBottom: 0.02 * SCREEN_HEIGHT}} />
+                        <Text style= {{color: '#f32a76', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Attendance</Text>
                     </Button>
                 </View>
                 <View style={{flexDirection:'row'}}>
-                    <View style={{height: 0.3 * SCREEN_WIDTH , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#353666', margin: 5, alignItems: 'center', justifyContent: 'center', opacity: 0.5}}>
-                        <Icon type="FontAwesome" name="star-o" style={{ color:'white',  marginBottom: 0.02 * SCREEN_HEIGHT}} />
-                        <Text style= {{color: 'white', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT,}}>PERFORMANCE</Text>
+                    <View style={{height: 0.3 * SCREEN_WIDTH , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#ffffff', margin: 5, alignItems: 'center', justifyContent: 'center', opacity: 0.5}}>
+                        <Icon type="FontAwesome" name="star-o" style={{ color:'#f32a76',  marginBottom: 0.02 * SCREEN_HEIGHT}} />
+                        <Text style= {{color: '#f32a76', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT,}}>PERFORMANCE</Text>
                     </View>
-                    <Button onPress={() => this.props.navigation.navigate('Admin')} style={{height: 0.3 * SCREEN_WIDTH, flexDirection:'column' , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#353666', margin: 5, alignItems: 'center', justifyContent: 'center', marginBottom: 0.2 * SCREEN_HEIGHT, marginLeft: 0.05 * SCREEN_WIDTH }}>
-                        <Icon type="FontAwesome" name="tasks" style={{ color:'white', marginBottom: 0.02 * SCREEN_HEIGHT}} />
-                        <Text style= {{color: 'white', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Admin Actions</Text>
+                    <Button onPress={() => this.props.navigation.navigate('Admin')} style={{height: 0.3 * SCREEN_WIDTH, flexDirection:'column' , width: 0.3 * SCREEN_WIDTH, elevation:10, borderRadius: 5, backgroundColor: '#ffffff', margin: 5, alignItems: 'center', justifyContent: 'center', marginBottom: 0.2 * SCREEN_HEIGHT, marginLeft: 0.05 * SCREEN_WIDTH }}>
+                        <Icon type="FontAwesome" name="tasks" style={{ color:'#f32a76', marginBottom: 0.02 * SCREEN_HEIGHT}} />
+                        <Text style= {{color: '#f32a76', fontFamily: 'Montserrat-Regular', fontSize: 0.012 * SCREEN_HEIGHT}}>Admin Actions</Text>
                     </Button>
                 </View>
             </View>

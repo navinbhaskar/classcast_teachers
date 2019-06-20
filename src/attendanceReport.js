@@ -65,7 +65,7 @@ constructor(props) {
         };
         axios.post(`https://classcast-198812.appspot.com/teachersapp/get_attendance_range_data`, data)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
+            console.log("asdfgh"+JSON.stringify(response.data));
             var output = [];
             var total_class = 0;
             response.data.student_data.forEach((item) => {
@@ -88,7 +88,8 @@ constructor(props) {
                 output.push(item);
               }
         });
-        console.log("new: "+JSON.stringify(output));
+        //console.log("new: "+JSON.stringify(output.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0))));
+        //output.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
         this.setState({recepients: output});
         }.bind(this))
         .catch(function (error) {
@@ -113,10 +114,14 @@ constructor(props) {
                     this.props.navigation.dispatch(navigateAction);
                 }}
             >
-            <ListItem style={{flexDirection:'row', width: '100%', flex:8}} >
-                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex:4}}>{item.name}</Text>
-                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex:3}}>{Math.round(item.class*100/(this.state.total_class+.000001),1)} %</Text>
-                <Icon type="FontAwesome" name="chevron-right" active={false} style={{fontSize: 15, color: 'black', margin: 5, flex:1}} /> 
+            <ListItem style={{flexDirection:'row', width: '90%', flex:18, marginBottom: 0.01 * SCREEN_HEIGHT, alignSelf: 'center'}} >
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex:10}}>{item.name}</Text>
+                <View style={{flexDirection: 'row', flex: 8}}>
+                    <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, flex: 4 }}>{Math.round(item.class*100/(this.state.total_class+.000001),1)} %</Text>
+                    <View style={{backgroundColor: '#f32a76', borderRadius: 0.02 * SCREEN_WIDTH, elevation: 5, flex: 4}}>
+                      <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.04 * SCREEN_WIDTH, color:'white', alignSelf: 'center', marginLeft: 0.02 * SCREEN_WIDTH, marginRight: 0.02 * SCREEN_WIDTH, marginTop: 0.003 * SCREEN_HEIGHT, marginBottom: 0.003 * SCREEN_HEIGHT}}>View</Text>
+                    </View>
+                </View>
             </ListItem>
             </TouchableNativeFeedback>
 
@@ -176,74 +181,70 @@ constructor(props) {
 
 
   render() {
-    //console.log("date: "+this.state.endDate.getFullYear()+'/'+parseInt(this.state.today.getMonth()+1)+'/'+this.state.endDate.getDate());
     return (
-      <Container style={{backgroundColor:'white', flex: 1}}>
+      <Container style={{backgroundColor:'#e2e2e2', flex: 1, width: '100%'}}>
       <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.06 * SCREEN_WIDTH, paddingBottom: 0.01 * SCREEN_HEIGHT, paddingTop: 0.05 * SCREEN_HEIGHT, color: 'black', textAlign: 'center'}}>Attendance Report</Text> 
-        <Content style={{padding:5}}>
+        <Content style={{ width: '100%'}}>
             <Form>
             { this.state.isReady &&
                 <Picker 
-                style={{alignSelf:'center', width: '60%', marginLeft: 50}}
+                style={{alignSelf:'center', width: '60%', elevation: 5, borderColor: 'red' }}
                 selectedValue={this.state.selected}
                 onValueChange={this.onValueChange.bind(this)}
                 >
                     {this.state.batchList.map((item, key)=>(
-                        <Picker.Item label={item.fields.batch_id+', Class- '+item.fields.standard} value={item.fields.batch_id+','+item.fields.standard} key={item.fields.batch_id+item.fields.standard} />)
+                        <Picker.Item color='black' label={item.fields.batch_id+', Class- '+item.fields.standard} value={item.fields.batch_id+','+item.fields.standard} key={item.fields.batch_id+item.fields.standard} />)
                     )}
                 </Picker>
               }
             </Form>
             <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', margin:10}}>
-            <Text style={{fontSize:15, marginRight:10, fontWeight:'bold'}}>From</Text>
-                <Button rounded light style={{backgroundColor:"green"}}>
+            <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH, marginRight:10, fontWeight:'bold'}}>From</Text>
+                <Button primary light style={{backgroundColor:"white"}}>
                     <DatePicker
-                    defaultDate={new Date(2019, 4, 4)}
-                    minimumDate={new Date(2018, 1, 1)}
-                    maximumDate={new Date(2019, 12, 31)}
+                    defaultDate={new Date((new Date()).valueOf() - 1000*60*60*24)}
+                    maximumDate={new Date()}
                     locale={"en"}
                     animationType={"fade"}
                     androidMode={"calendar"}
                     placeHolderText="Select Date"
-                    textStyle={{ color: "white" }}
-                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    textStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "black" }}
+                    placeHolderTextStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "#d3d3d3" }}
                     onDateChange={(date) => this.setState({startDate: date})}
                     disabled={false}
                     />
                 </Button>
-                <Text style={{fontSize:15, marginHorizontal:10, fontWeight:'bold'}}>to</Text>
-                <Button rounded light style={{backgroundColor:"green"}}>
+                <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH, marginHorizontal:10, fontWeight:'bold'}}>to</Text>
+                <Button primary light style={{backgroundColor:"white"}}>
                     <DatePicker
-                    defaultDate={new Date(2019, 4, 4)}
-                    minimumDate={new Date(2018, 1, 1)}
-                    maximumDate={new Date(2019, 12, 31)}
+                    defaultDate={new Date()}
+                    maximumDate={new Date()}
                     locale={"en"}
                     animationType={"fade"}
                     androidMode={"calendar"}
                     placeHolderText="Select Date"
-                    textStyle={{ color: "white" }}
-                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    textStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "black" }}
+                    placeHolderTextStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "#d3d3d3" }}
                     onDateChange={(date) => this.setState({endDate: date})}
                     disabled={false}
                     />
                 </Button>
             </View>
-            <Button rounded light style={{backgroundColor:"green", alignSelf:'center',marginTop: 10}}
+            <Button primary light style={{backgroundColor:"white", alignSelf:'center',marginTop: 10}}
                 onPress={()=>{
                 console.log('working');
                 this.generateReport();
               }}>
-                <Text style={{color: 'white', fontSize:12}}>Generate Report</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: 'pink'}}>Generate Report</Text>
             </Button>
             <View style={{alignItems:'center', justifyContent:'center', margin:30}}>
-                <Text>Total Classes - {this.state.total_class}</Text>
-                <Text>Average Attendance - {this.state.percentage}%</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH,}}>Total Classes - {this.state.total_class}</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH,}}>Average Attendance - {this.state.percentage}%</Text>
             </View>
             <View style={{backgroundColor:'#dcdcdc'}}>
-            <ListItem style={{flexDirection:'row', width: '100%', flex:8}} >
-                <Text style={{flex:4, fontWeight:'bold'}}>Student Name</Text>
-                <Text style={{flex:2, fontWeight:'bold'}}>Attendance</Text>
-                <Text style={{flex:2, fontWeight:'bold'}}></Text>
+            <ListItem style={{flexDirection:'row', width: '100%', flex:18}} >
+                <Text style={{flex:10, fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH}}>Student Name</Text>
+                <Text style={{flex:8, fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH}}>Attendance</Text>
             </ListItem>
             </View>
             { this.state.isReady &&

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3 } from 'native-base';
-import {View, Image, Dimensions, StyleSheet, ScrollView, FlatList,ListItem } from 'react-native';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, ListItem } from 'native-base';
+import {View, Image, Dimensions, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import axios from "axios";
 import {NavigationActions} from 'react-navigation';
@@ -34,15 +34,17 @@ export default class studentDetails extends Component {
       }
   }
 
-  _renderList({item, index}){
-    console.log("data: "+JSON.stringify(item.fields));
+    _renderList({item, index}){
+        console.log("item: "+JSON.stringify(item))
         return (
-            <View style={{flexDirection:'row', width: '100%', flex:8, marginLeft: 5 * vw}} >
-                <Text style={{flex:4}}>{item.fields.timestamp}</Text>
-                <Text style={{flex:4}}>{item.fields.class_attended? 'Attended': 'Not Attended'}</Text>
+            
+            <View style={{flexDirection:'row', width: '90%', flex:18, marginTop: 1 * vh, alignSelf: 'center', marginBottom: 1 * vh}} >
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 4 * vw, flex:10}}>{item.fields.timestamp}</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 4 * vw, flex: 8 }}>{item.fields.class_attended? 'Present': 'Absent'}</Text>
             </View>
         );
     }
+
 
    componentDidMount() {
     axios.get(`https://classcast-198812.appspot.com/teachersapp/student_attendance_data/`+this.props.navigation.state.params.username+'/'+this.props.navigation.state.params.standard+'/'+this.props.navigation.state.params.batch_id)
@@ -52,7 +54,7 @@ export default class studentDetails extends Component {
             if(response.data.gender == '2') {
                 this.setState({gender: 'F'})
               }
-              else {
+            if(response.data.gender == '1') {
                 this.setState({gender: 'M'})
               }
             this.setState({standard: response.data.standard});
@@ -71,23 +73,26 @@ export default class studentDetails extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
+        { this.state.isReady &&
         <View style={styles.aboutUserSection}>
             <View style={styles.userImageContainer}>
               <Image 
                 source={ this.state.gender == 'M' ? USER_DP_MALE: USER_DP_FEMALE}
                 style={styles.userImage}/>
             </View>
-            <Text style={{ textAlign: 'left', marginLeft: 5 * vw, marginTop: 3 * vh}}>Name: {this.state.name}</Text>
-            <Text style={{ textAlign: 'left', marginLeft: 5 * vw}}>Class: {this.state.standard}</Text>
-            <Text style={{ textAlign: 'left', marginLeft: 5 * vw}}>Gender: {this.state.gender == 'M'? 'Male': 'Female'}</Text>
-            <Text style={{ textAlign: 'left', marginLeft: 5 * vw}}>Phone Number: +91 {this.state.phone}</Text>
-        </View>
-         <View style={{backgroundColor:'#dcdcdc', margin: 2 * vw}}>
-            <View style={{flexDirection:'row', width: '100%', flex:8, margin: 2 * vw}} >
-                <Text style={{flex:4, fontWeight:'bold'}}>Student Name</Text>
-                <Text style={{flex:2, fontWeight:'bold'}}>Attendance</Text>
-                <Text style={{flex:2, fontWeight:'bold'}}></Text>
+            <View style ={{backgroundColor: '#f32a76', marginTop: 2 * vh, width: '95%', alignSelf: 'center', justifyContent:'center', padding: 2 * vw, borderRadius: 2 * vw}}>
+              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Name: {this.state.name}</Text>
+              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Class: {this.state.standard}</Text>
+              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Gender: {this.state.gender == 'M'? 'Male': 'Female'}</Text>
+              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Phone Number: +91 {this.state.phone}</Text>
             </View>
+        </View>
+      }
+         <View style={{backgroundColor:'#dcdcdc'}}>
+            <ListItem style={{flexDirection:'row', width: '100%', flex:18}} >
+                <Text style={{flex:10, fontFamily: 'Montserrat-Bold', fontSize: 3 * vw}}>Student Name</Text>
+                <Text style={{flex:8, fontFamily: 'Montserrat-Bold', fontSize: 3 * vw}}>Attendance</Text>
+            </ListItem>
             </View>
             <FlatList 
                 data={this.state.attendance_data}
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
   width: 30 * vw,
   borderRadius: 15 * vw,
   padding: 0.6 * vw,
-  backgroundColor: '#29206f',
+  backgroundColor: '#f32a76',
   alignSelf: 'center'
  },
  userImage: {

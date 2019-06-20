@@ -40,7 +40,7 @@ export const adminTopNavigator = createBottomTabNavigator({
   studentAdmin: { screen: studentAdmin, navigationOptions: {
     tabBarIcon: ({ tintColor }) => (
       <View Style={{height: 5 * vh, width: 5 * vh, justifyContent: 'center', alignItems: 'center', elevation: 3}}>
-         <Icon type="FontAwesome" name={"user"} style={{ fontSize: 15, alignSelf: 'center'}} />
+         <Icon type="FontAwesome" name={"user"} style={{ fontSize: 15, alignSelf: 'center', color: tintColor}} />
         
         <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Manage Students</Text>
       </View>
@@ -49,7 +49,7 @@ export const adminTopNavigator = createBottomTabNavigator({
   batchAdmin: { screen: batchAdmin, navigationOptions: {
     tabBarIcon: ({ tintColor }) => (
       <View Style={{height: 5 * vh, width: 5 * vh,  justifyContent: 'center', alignItems: 'center'}}>
-         <Icon type="FontAwesome" name={"university"} style={{ fontSize: 15, alignSelf: 'center'}}/>
+         <Icon type="FontAwesome" name={"university"} style={{ fontSize: 15, alignSelf: 'center', color: tintColor}}/>
         <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Manage Batches</Text>
       </View>
       )
@@ -60,9 +60,8 @@ export const adminTopNavigator = createBottomTabNavigator({
   <CustomTabBar
       {...props}/> ),
   tabBarOptions: {
-    activeTintColor: "#6044f0",
+    activeTintColor: "#f32a76",
     inactiveTintColor: "#c1c8db",
-    inactiveTintColor: "#aeadb2",
     style: {
     backgroundColor: '#222126',
   },
@@ -114,7 +113,7 @@ export const attendanceStack = createBottomTabNavigator({
   "New Attendance": { screen: batchListAttendance, navigationOptions: {
     tabBarIcon: ({ tintColor }) => (
       <View Style={{height: 5 * vh, width: 5 * vh, justifyContent: 'center', alignItems: 'center', elevation: 3}}>
-         <Icon type="FontAwesome" name={"user-plus"} style={{ fontSize: 15, alignSelf: 'center'}} />
+         <Icon type="FontAwesome" name={"user-plus"} style={{ fontSize: 15, alignSelf: 'center', color: tintColor}} />
         
         <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>New Attendance</Text>
       </View>
@@ -123,7 +122,7 @@ export const attendanceStack = createBottomTabNavigator({
   "Attendance Report": { screen: attendanceReportSelector, navigationOptions: {
     tabBarIcon: ({ tintColor }) => (
       <View Style={{height: 5 * vh, width: 5 * vh,  justifyContent: 'center', alignItems: 'center'}}>
-         <Icon type="FontAwesome" name={"bar-chart"} style={{ fontSize: 15, alignSelf: 'center'}}/>
+         <Icon type="FontAwesome" name={"bar-chart"} style={{ fontSize: 15, alignSelf: 'center', color: tintColor}}/>
         <Text style={{fontSize: 2.8 * vw, fontFamily: 'Montserrat-Bold', color: tintColor,}}>Attendance Report</Text>
       </View>
       )
@@ -134,9 +133,8 @@ export const attendanceStack = createBottomTabNavigator({
   <CustomTabBar
       {...props}/> ),
   tabBarOptions: {
-    activeTintColor: "#6044f0",
+    activeTintColor: "#f32a76",
     inactiveTintColor: "#c1c8db",
-    inactiveTintColor: "#aeadb2",
     style: {
     backgroundColor: '#222126',
   },

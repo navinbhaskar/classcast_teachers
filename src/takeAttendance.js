@@ -35,7 +35,8 @@ constructor(props) {
 
     axios.get(`https://classcast-198812.appspot.com/teachersapp/get_attendance_data/`+this.props.navigation.state.params.standard+'/'+this.props.navigation.state.params.batch_id)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
+            //console.log("sknfsf"+JSON.stringify(response.data.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))));
+            response.data.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
             this.setState({studentList: response.data});
             this.setState({isReady: true});
         }.bind(this))
