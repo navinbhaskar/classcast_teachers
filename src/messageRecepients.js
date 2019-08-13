@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Fab} from 'native-base';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Fab, Spinner } from 'native-base';
 import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import firebase from 'react-native-firebase';
 import axios from 'axios';
@@ -29,22 +29,40 @@ export default class messageRecepients extends Component {
 
   constructor(props) {
     super(props);
+    this.loadData = this.loadData.bind(this);
     this._renderList = this._renderList.bind(this);
     this.state = {
     active: false,
     random: false,
     isReady: false,
-    recepients: []
+    recepients: [],
+    username: null
     }
-}
+  } 
+
+  loadData() {
+    axios.get(`https://classcast-198812.appspot.com/teachersapp/chat_list/`)
+    .then((res)=> {
+      console.log("chat_list: "+JSON.stringify(res.data));
+      this.setState({recepients: res.data.reverse(),
+                        isReady: true
+           })
+    })
+    .catch(err=> {console.log("errorrr: "+err)})
+
+    axios.get(`https://classcast-198812.appspot.com/teachersapp/updateMessageSeenStatus`)
+    
+  }
+
 
 _renderList({item, index}){
-    console.log("data1234: "+JSON.stringify(item.name[0]));
+    console.log("data1234: "+JSON.stringify(item));
     return (
         <ListItem style={{flexDirection:'row', width: '90%', flex:21, backgroundColor: 'rgba(256,256,256,0.8)', marginBottom: 0.01 * SCREEN_HEIGHT, borderRadius: 0.02 * SCREEN_WIDTH}}
                   onPress={() => {
                     this.props.navigation.navigate('chatScreen', {
                       name: item.name,
+                      username: item.username,
                       chat_id: item.chat_id
                     });
             }}>
@@ -69,16 +87,33 @@ _renderList({item, index}){
     );
 }
 
-  componentDidMount(){
+  async componentDidMount(){
 
-    axios.get(`https://classcast-198812.appspot.com/teachersapp/chat_list/`)
-    .then((res)=> {
-      console.log("chat_list: "+JSON.stringify(res.data));
-      this.setState({recepients: res.data.reverse(),
-                        isReady: true
-           })
+    var currentUser = await firebase.auth().currentUser;                 
+     await currentUser.getIdToken()
+            .then(idToken => {
+                  console.log("sanusa: "+JSON.stringify(currentUser['email'].split('@')[0]))
+                  //this.setState({ username: currentUser['email'].split('@')[0] });
+                });
+
+
+    const db = firebase.firestore()
+        db.collection('chatLists')
+          .doc(this.state.username)
+            .onSnapshot((doc)=> {
+              if (doc.exists) {
+                this.loadData()
+              }
+            }),
+            (error) => {
+            console.error(error);
+            };
+
+
+    this._navListener = this.props.navigation.addListener('didFocus', () => {
+      this.loadData()
     })
-    .catch(err=> {console.log("errorrr: "+err)})
+
   }
 
   render() {
@@ -94,7 +129,10 @@ _renderList({item, index}){
                 extraData={this.state}
                 renderItem={this._renderList}
                 />  
-         }            
+         }
+         { !this.state.isReady &&
+          <Spinner color='red' />
+         }    
         </Content>
         <View style={{ position: 'absolute', bottom: 0, right: 0}}>
           <Fab

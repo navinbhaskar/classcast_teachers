@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Input} from 'native-base';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Input, Spinner} from 'native-base';
 import {View, Image, FlatList, TouchableNativeFeedback, ScrollView, StyleSheet, Dimensions, LayoutAnimation, TextInput, Picker, ToastAndroid } from 'react-native';
 import axios from "axios";
 
@@ -41,7 +41,8 @@ export default class editStudentData extends Component {
         submitAttempted: false,
         message: 'Invalid',
         batchList: [],
-        batchSelected: false
+        batchSelected: false,
+        isReady: false
       }
   }
 
@@ -62,7 +63,8 @@ export default class editStudentData extends Component {
               lastNameValid: true,
               classSelected: true,
               genderSelected: true,
-              batchSelected: true
+              batchSelected: true,
+              isReady: true
             })
         }.bind(this))
         .catch(function (error) {
@@ -99,6 +101,7 @@ export default class editStudentData extends Component {
               this.setState({loading: false});
               console.log("status: "+JSON.stringify(response));
               if(response.data.status == 'True'){
+                ToastAndroid.showWithGravity("Updated successfully ", ToastAndroid.SHORT, ToastAndroid.CENTER);
                 this.props.navigation.navigate('adminHome');
               }
               else{
@@ -162,6 +165,9 @@ export default class editStudentData extends Component {
         contentContainerStyle={styles.container}
       >
         <Text style={styles.h2}> Edit Student Details</Text>
+      { !this.state.isReady &&
+          <Spinner color='white' />
+      }
       <View style={styles.userTypesContainer}>
             <UserTypeItem
               label="FEMALE"
@@ -199,7 +205,7 @@ export default class editStudentData extends Component {
         />
         </View>
         { this.state.submitAttempted && !this.state.firstNameValid &&
-          <Text style={{color: 'red'}}>fill this</Text>
+          <Text style={{color: 'red'}}>Please enter student's first name</Text>
         }
         <View style={{ width: '75%', alignItems: 'center', height: 0.08 * SCREEN_HEIGHT, borderRadius: 0.1 * SCREEN_WIDTH, borderWidth: 2, borderColor: this.state.lastNameValid ? 'white': this.state.submitAttempted ? 'red': 'white', justifyContent: 'center', alignItems: 'center', marginTop: .05 * SCREEN_WIDTH }}>
         <TextInput
@@ -219,19 +225,18 @@ export default class editStudentData extends Component {
         />
         </View>
         { this.state.submitAttempted && !this.state.lastNameValid &&
-          <Text style={{color: 'red'}}>fill this</Text>
+          <Text style={{color: 'red'}}>Please enter student's last name</Text>
         }
         <View style={{ width: '75%', alignItems: 'center', height: 0.08 * SCREEN_HEIGHT, borderRadius: 0.1 * SCREEN_WIDTH, borderWidth: 2, borderColor: this.state.phoneValid ? 'white': this.state.submitAttempted ? 'red': 'white', justifyContent: 'center', alignItems: 'center', marginTop: .05 * SCREEN_WIDTH }}>
         <TextInput
           style={{width: '100%', fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: 'white', textAlign: 'center',}}
-          placeholder='Enter your 10 digit Phone No.'
+          placeholder=''
           placeholderTextColor= 'white'
           value = {this.state.phone}
+          editable= {false}
         />
         </View>
-        { this.state.submitAttempted && !this.state.phoneValid &&
-          <Text style={{color: 'red'}}>{this.state.message}</Text>
-        }
+        
         <View style={styles.classTypesContainer}>
             <UserClass
               label="Class-11"

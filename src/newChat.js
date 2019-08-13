@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem} from 'native-base';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Spinner} from 'native-base';
 import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import axios from 'axios';
 
@@ -16,7 +16,10 @@ constructor(props) {
     this._renderList = this._renderList.bind(this);
     this.state = {
     random: false,
-    recepients: []
+    recepients: [],
+    batch_list: [],
+    student_list: [],
+    isReady: false
     }
 }
 
@@ -37,10 +40,19 @@ constructor(props) {
 
                       axios.post(`https://classcast-198812.appspot.com/teachersapp/start_chat`, { "chat_id": res.data.chat_id })
                       .then(result=> {
+                          axios.post(`https://classcast-198812.appspot.com/teachersapp/update_group_chat_data`, 
+                            { 
+                              "chat_id": res.data.chat_id,
+                              "standard": item.standard,
+                              "batch_id": item.batch_id
+                            });
+
                         this.props.navigation.navigate('chatScreen', {
                           name: item.batch_id,
-                          chat_id: res.data.chat_id
+                          chat_id: res.data.chat_id,
+                          username: item.username
                         });
+
                       })
 
                     })
@@ -82,7 +94,8 @@ constructor(props) {
                       .then(result=> {
                         this.props.navigation.navigate('chatScreen', {
                           name: item.name,
-                          chat_id: res.data.chat_id
+                          chat_id: res.data.chat_id,
+                          username: item.username
                         });
                       })
 
@@ -123,12 +136,17 @@ constructor(props) {
   componentDidMount() {
     axios.get(`https://classcast-198812.appspot.com/teachersapp/chat_data/`)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
-            this.setState({recepients: response.data});
+            console.log("sdsuibsbdsib"+JSON.stringify(response.data.filter(function (pilot) {
+              return pilot.type === "student";
+            })));
+            this.setState({student_list: response.data.filter(function (pilot) {return pilot.type === "student"}).sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0)) });
+            this.setState({batch_list: response.data.filter(function (pilot) {return pilot.type === "batch"}) });
+            //response.data.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
+            //this.setState({recepients: response.data});
             this.setState({isReady: true});
         }.bind(this))
         .catch(function (error) {
-            console.log('error');
+            console.log('sdsuibsbdsiberror: '+error);
         });
   }
 
@@ -140,11 +158,21 @@ constructor(props) {
                    style={{height: 0.6 * SCREEN_HEIGHT, width: '95%', position: 'absolute', marginTop: 0.3 * SCREEN_HEIGHT, opacity: 0.9, resizeMode: 'contain', alignSelf: 'center'}} />
         <Content style={{padding:5}}>
           { this.state.isReady &&
-          <FlatList 
-              data={this.state.recepients}
-              extraData={this.state}
-              renderItem={this._renderList}
-              />            
+          <View>
+            <FlatList 
+                data={this.state.batch_list}
+                extraData={this.state}
+                renderItem={this._renderList}
+                />
+            <FlatList 
+                data={this.state.student_list}
+                extraData={this.state}
+                renderItem={this._renderList}
+                />
+          </View>          
+          }
+          { !this.state.isReady &&
+            <Spinner color='red' />
           }
         </Content>
             

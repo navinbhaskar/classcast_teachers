@@ -97,6 +97,7 @@ constructor(props) {
     axios.get('https://classcast-198812.appspot.com/teachersapp/all_student_list/'+standard)
             .then((response) => 
             {
+              response.data.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
               console.log("working"+JSON.stringify(response.data.map(obj=> ({ ...obj, selected: false }))));
               this.setState({all_student_list: response.data.map(obj=> ({ ...obj, selected: false })) });
             })

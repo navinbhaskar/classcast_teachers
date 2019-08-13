@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, DatePicker , ListItem, Picker, Form, ToastAndroid} from 'native-base';
-import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, DatePicker , ListItem, Picker, Form, Spinner} from 'native-base';
+import {View, Image, FlatList, TouchableNativeFeedback, Dimensions, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import {NavigationActions} from 'react-navigation';
 
@@ -25,8 +25,12 @@ constructor(props) {
     chosenDate: new Date(),
     startDate: new Date(),
     endDate: new Date(),
+    startDateSelected: false,
+    endDateSelected: false,
     total_class: 0,
     percentage: 0,
+    isReady: false,
+    isReady2: false,
     selected: this.props.navigation.state.params.batch_id+','+this.props.navigation.state.params.standard,
     batchList: [
       {
@@ -91,6 +95,7 @@ constructor(props) {
         //console.log("new: "+JSON.stringify(output.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0))));
         //output.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
         this.setState({recepients: output});
+        ToastAndroid.showWithGravity("Report generated successfully", ToastAndroid.SHORT, ToastAndroid.CENTER)
         }.bind(this))
         .catch(function (error) {
             console.log(error);
@@ -142,7 +147,7 @@ constructor(props) {
         });
     axios.get(`https://classcast-198812.appspot.com/teachersapp/overview_attendance_data/`+this.state.standard+'/'+this.state.batch_id)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
+            console.log("dsbfsifbdfsi"+JSON.stringify(response.data));
             this.setState({total_class: response.data.total_classes});
             this.setState({percentage: response.data.percentage});
             var output = [];
@@ -169,6 +174,7 @@ constructor(props) {
         });
         console.log("new: "+JSON.stringify(output));
         this.setState({recepients: output});
+        this.setState({isReady2: true});
         }.bind(this))
         .catch(function (error) {
             console.log('error');
@@ -196,7 +202,10 @@ constructor(props) {
                         <Picker.Item color='black' label={item.fields.batch_id+', Class- '+item.fields.standard} value={item.fields.batch_id+','+item.fields.standard} key={item.fields.batch_id+item.fields.standard} />)
                     )}
                 </Picker>
-              }
+            }
+            { !this.state.isReady &&
+                <Spinner color='red' />
+            }
             </Form>
             <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', margin:10}}>
             <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH, marginRight:10, fontWeight:'bold'}}>From</Text>
@@ -210,7 +219,10 @@ constructor(props) {
                     placeHolderText="Select Date"
                     textStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "black" }}
                     placeHolderTextStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "#d3d3d3" }}
-                    onDateChange={(date) => this.setState({startDate: date})}
+                    onDateChange={(date) => {
+                        this.setState({startDate: date});
+                        this.setState({startDateSelected: true});
+                    }}
                     disabled={false}
                     />
                 </Button>
@@ -218,6 +230,7 @@ constructor(props) {
                 <Button primary light style={{backgroundColor:"white"}}>
                     <DatePicker
                     defaultDate={new Date()}
+                    minimumDate={this.state.startDate}
                     maximumDate={new Date()}
                     locale={"en"}
                     animationType={"fade"}
@@ -225,17 +238,24 @@ constructor(props) {
                     placeHolderText="Select Date"
                     textStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "black" }}
                     placeHolderTextStyle={{ fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: "#d3d3d3" }}
-                    onDateChange={(date) => this.setState({endDate: date})}
+                    onDateChange={(date) => {
+                        this.setState({endDate: date});
+                        this.setState({endDateSelected: true});
+                    }}
                     disabled={false}
                     />
                 </Button>
             </View>
-            <Button primary light style={{backgroundColor:"white", alignSelf:'center',marginTop: 10}}
+            <Button primary style={{ backgroundColor: '#f32a76', alignSelf:'center',marginTop: 10}}
                 onPress={()=>{
-                console.log('working');
-                this.generateReport();
+                if(this.state.startDateSelected && this.state.endDateSelected) {
+                    this.generateReport();
+                }
+                else {
+                    ToastAndroid.showWithGravity("Select start and end date", ToastAndroid.SHORT, ToastAndroid.CENTER)
+                }
               }}>
-                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: 'pink'}}>Generate Report</Text>
+                <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: this.state.startDateSelected && this.state.endDateSelected ? 'white': 'grey'}}>Generate Report</Text>
             </Button>
             <View style={{alignItems:'center', justifyContent:'center', margin:30}}>
                 <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH,}}>Total Classes - {this.state.total_class}</Text>
@@ -247,12 +267,15 @@ constructor(props) {
                 <Text style={{flex:8, fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH}}>Attendance</Text>
             </ListItem>
             </View>
-            { this.state.isReady &&
+            { this.state.isReady2 &&
             <FlatList 
                 data={this.state.recepients}
                 extraData={this.state}
                 renderItem={this._renderList}
                 />            
+            }
+            { !this.state.isReady2 &&
+                <Spinner color='red' />
             }
         </Content>
             

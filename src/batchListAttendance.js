@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem} from 'native-base';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Spinner} from 'native-base';
 import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import {StackActions, NavigationActions} from 'react-navigation';
 import axios from "axios";
@@ -147,6 +147,9 @@ constructor(props) {
                 extraData={this.state}
                 renderItem={this._renderList}
                 />            
+          }
+          { !this.state.isReady &&
+            <Spinner color='red' />
           }
         </Content>            
       </Container>

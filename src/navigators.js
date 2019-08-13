@@ -20,6 +20,10 @@ import editStudentData from './editStudentData';
 import CustomTabBar from './customBarBottom';
 import studentAdmin from './studentAdmin';
 import batchAdmin from './batchAdmin';
+import topic from './testTopic';
+import announcement from './announcement';
+import createTest from './createTest';
+import sendTest from './sendTest';
 import {View, Text, Image, Dimensions, TouchableNativeFeedback } from 'react-native';
 import { Icon } from "native-base";
 
@@ -153,6 +157,10 @@ export const HomeStack = createStackNavigator({
     NewAttendance: {screen: newAttendanceStack},
     attendanceReport: { screen: attendanceReportsStack },
     Admin: {screen: adminStack},
+    announcement: { screen: announcement },
+    createTest: { screen: createTest },
+    topic: { screen: topic },
+    sendTest: { screen: sendTest },
   }, {
     initialRouteName: 'Home',
     headerMode: 'none',

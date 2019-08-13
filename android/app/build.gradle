@@ -108,8 +108,15 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "Vishwamitra_1.0"
         multiDexEnabled true
+    }
+
+    packagingOptions {
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
 
     signingConfigs {
@@ -154,14 +161,20 @@ android {
 }
 
 dependencies {
+    implementation project(':rn-fetch-blob')
+    implementation project(':react-native-pdf')
+    implementation project(':react-native-fs')
+    implementation project(':react-native-file-viewer')
     implementation project(':react-native-video')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-firebase')
     implementation "com.google.android.gms:play-services-base:16.1.0"
-    implementation "com.google.firebase:firebase-core:16.0.8"
+    implementation "com.google.firebase:firebase-core:16.0.9"
     implementation "com.google.firebase:firebase-auth:17.0.0"
-    implementation "com.google.firebase:firebase-storage:16.1.0"
+    implementation "com.google.firebase:firebase-storage:17.0.0"
     implementation "com.google.firebase:firebase-firestore:18.2.0"
+    implementation "com.google.firebase:firebase-messaging:18.0.0"
+    implementation 'me.leolin:ShortcutBadger:1.1.21@aar' 
     implementation project(':react-native-document-picker')
     implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])

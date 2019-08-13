@@ -38,7 +38,7 @@ export default class studentDetails extends Component {
         console.log("item: "+JSON.stringify(item))
         return (
             
-            <View style={{flexDirection:'row', width: '90%', flex:18, marginTop: 1 * vh, alignSelf: 'center', marginBottom: 1 * vh}} >
+            <View style={{flexDirection:'row', width: '90%', flex:18, marginTop: 1 * vh, alignSelf: 'center', marginBottom: 1 * vh, backgroundColor: item.fields.class_attended ? 'rgba(168, 239, 148, 1)': 'rgba(249, 107, 119, 0.8)', padding: 2 * vw}} >
                 <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 4 * vw, flex:10}}>{item.fields.timestamp}</Text>
                 <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 4 * vw, flex: 8 }}>{item.fields.class_attended? 'Present': 'Absent'}</Text>
             </View>
@@ -49,12 +49,12 @@ export default class studentDetails extends Component {
    componentDidMount() {
     axios.get(`https://classcast-198812.appspot.com/teachersapp/student_attendance_data/`+this.props.navigation.state.params.username+'/'+this.props.navigation.state.params.standard+'/'+this.props.navigation.state.params.batch_id)
         .then(function (response){
-            console.log(JSON.stringify(response.data));
+            console.log("sanisnsao"+JSON.stringify(response.data));
             this.setState({name: response.data.name});
-            if(response.data.gender == '2') {
+            if(response.data.gender == 'Female') {
                 this.setState({gender: 'F'})
               }
-            if(response.data.gender == '1') {
+            if(response.data.gender == 'Male') {
                 this.setState({gender: 'M'})
               }
             this.setState({standard: response.data.standard});
@@ -80,17 +80,45 @@ export default class studentDetails extends Component {
                 source={ this.state.gender == 'M' ? USER_DP_MALE: USER_DP_FEMALE}
                 style={styles.userImage}/>
             </View>
-            <View style ={{backgroundColor: '#f32a76', marginTop: 2 * vh, width: '95%', alignSelf: 'center', justifyContent:'center', padding: 2 * vw, borderRadius: 2 * vw}}>
-              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Name: {this.state.name}</Text>
-              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Class: {this.state.standard}</Text>
-              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Gender: {this.state.gender == 'M'? 'Male': 'Female'}</Text>
-              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Phone Number: +91 {this.state.phone}</Text>
+            <View style ={{backgroundColor: '#f32a76', marginTop: 2 * vh, flex:4, width: '95%', alignSelf: 'center', justifyContent:'center', padding: 2 * vw, borderRadius: 2 * vw, elevation: 5, marginBottom: 2 * vh}}>
+              <View style={{flexDirection: 'row', flex:3,}}>
+                <View>
+                  <Text style={{ flex: 1,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Name:</Text>
+                </View>
+                <View>
+                  <Text style={{ flex: 2,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>{this.state.name}</Text>
+                </View>
+              </View>
+              <View style={{flexDirection: 'row', flex:3,}}>
+                <View>
+                  <Text style={{ flex: 1,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Class:</Text>
+                </View>
+                <View>
+                  <Text style={{ flex: 2,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>{this.state.standard}</Text>
+                </View>
+              </View>
+              <View style={{flexDirection: 'row', flex:3,}}>
+                <View>
+                  <Text style={{ flex: 1,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Gender:</Text>
+                </View>
+                <View>
+                  <Text style={{ flex: 2,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>{this.state.gender == 'M'? 'Male': 'Female'}</Text>
+                </View>
+              </View>
+              <View style={{flexDirection: 'row', flex:3,}}>
+                <View>
+                  <Text style={{ flex: 1,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>Phone Number:</Text>
+                </View>
+                <View>
+                  <Text style={{ flex: 2,fontFamily: 'Montserrat-Bold', fontSize: 4 * vw, color:'white', textAlign: 'left', marginLeft: 5 * vw}}>+91 {this.state.phone}</Text>
+              </View>
+              </View>
             </View>
         </View>
       }
          <View style={{backgroundColor:'#dcdcdc'}}>
-            <ListItem style={{flexDirection:'row', width: '100%', flex:18}} >
-                <Text style={{flex:10, fontFamily: 'Montserrat-Bold', fontSize: 3 * vw}}>Student Name</Text>
+            <ListItem style={{flexDirection:'row', width: '100%', flex:16}} >
+                <Text style={{flex:8, fontFamily: 'Montserrat-Bold', fontSize: 3 * vw}}>Date</Text>
                 <Text style={{flex:8, fontFamily: 'Montserrat-Bold', fontSize: 3 * vw}}>Attendance</Text>
             </ListItem>
             </View>

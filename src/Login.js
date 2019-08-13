@@ -17,6 +17,7 @@ import {
   Input,
   Button
 } from 'react-native';
+import { Spinner } from 'native-base';
 import Modal from "react-native-modal";
 import firebase from 'react-native-firebase';
 import axios from "axios";
@@ -40,7 +41,10 @@ export default class Login extends Component {
     this.state = {
       isReady: true,
       email: '',
-      password: ''
+      password: '',
+      submit: false,
+      showEmailWarning: false,
+      showPasswordWarning: false
     };
     this.handleEmail = this.handleEmail.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
@@ -55,7 +59,9 @@ export default class Login extends Component {
    }
 
   handleSignUp = () => {
-    const { email, password } = this.state
+    this.setState({submit: true});
+    const { email, password } = this.state;
+
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -71,10 +77,15 @@ export default class Login extends Component {
         this.props.navigation.navigate('HomeStack');
       })
       .catch(error => {
+        this.setState({showEmailWarning: true});
+        this.setState({showPasswordWarning: true});
         this.setState({ errorMessage: error.message });
-        console.log(error)
+        console.log(error);
+        this.setState({submit: false})
     })
   }
+
+
   
   render() {
     const {
@@ -121,7 +132,9 @@ export default class Login extends Component {
                inputStyle={styles.inputStyle}
                autoCapitalize = "none"
                onChangeText = {this.handleEmail}/>
-            
+            { this.state.showEmailWarning &&
+              <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH, color:'black', marginBottom: 10, alignSelf: 'center'}}>Please enter valid username</Text>
+            }
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
                placeholder = "Password"
@@ -129,14 +142,31 @@ export default class Login extends Component {
                autoCapitalize = "none"
                secureTextEntry = {true}
                onChangeText = {this.handlePassword}/>
-            
-            <TouchableOpacity
-               style = {styles.submitButton}
-               onPress = {() => 
-                this.handleSignUp()
-               }>
-               <Text style = {styles.submitButtonText}> Get Started </Text>
-            </TouchableOpacity>
+            { this.state.showPasswordWarning &&
+              <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.03 * SCREEN_WIDTH, color:'black', marginBottom: 10, alignSelf: 'center'}}>Please enter valid password</Text>
+            }
+
+            { !this.state.submit &&
+              <TouchableOpacity
+                 style = {styles.submitButton}
+                 onPress = {() => {
+                  if(this.state.email != '' && this.state.password != '') {
+                    console.log('notworking');
+                    this.handleSignUp()
+                  }
+                  if(this.state.email == '') {
+                    this.setState({ showEmailWarning: true });
+                  }
+                  if(this.state.password == '') {
+                    this.setState({ showPasswordWarning: true });
+                  }
+                 }}>
+                 <Text style = {styles.submitButtonText}> Get Started </Text>
+              </TouchableOpacity>
+            }
+            { this.state.submit &&
+              <Spinner color='red' />
+            }
          </View>
       </ScrollView>
       </View>
@@ -152,7 +182,7 @@ const styles = StyleSheet.create({
    input: {
       fontFamily: 'Montserrat-Bold',
       fontSize: 0.04 * SCREEN_WIDTH,
-      color: 'white',
+      color: '#fa6432',
       textAlign: 'center',
       alignSelf:'center',
       borderRadius: 0.2 * SCREEN_WIDTH,

@@ -75,6 +75,8 @@ constructor(props) {
     axios.get('https://classcast-198812.appspot.com/teachersapp/all_student_list/'+standard)
             .then((response) => 
             {
+              console.log("asnasnan: "+JSON.stringify(response.data));
+              response.data.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
               console.log("working"+JSON.stringify(response.data.map(obj=> ({ ...obj, selected: false }))));
               this.setState({all_student_list: response.data.map(obj=> ({ ...obj, selected: false })) });
             })
@@ -125,9 +127,11 @@ this.hideDateTimePicker();
             .then((response) => 
             {
               console.log("working"+JSON.stringify(response.data));
+              ToastAndroid.showWithGravity("Batch created successfully", ToastAndroid.SHORT, ToastAndroid.CENTER);
               this.props.navigation.navigate('adminHome');
             })
             .catch((error) => {
+              ToastAndroid.showWithGravity("Something went wrong", ToastAndroid.SHORT, ToastAndroid.CENTER);
               console.log("error"+error)
             })
     }
@@ -183,6 +187,9 @@ this.hideDateTimePicker();
             }}
           />
           </View>
+          { this.state.submitAttempted && !this.state.batchSelected &&
+            <Text style={{color: 'red', alignSelf: 'center'}}>Please enter batch name</Text>
+          }
           <View style={{flexDirection: 'row', justifyContent: 'space-around', width: '80%', alignItems: 'center', marginTop: 0.05 * SCREEN_HEIGHT, alignSelf: 'center'}}>
             <UserClass
               label="Class-11"
@@ -217,8 +224,10 @@ this.hideDateTimePicker();
               }}
               selected={this.state.standard === 13}
             />
-      </View>
-
+          </View>
+          { this.state.submitAttempted && !this.state.classSelected &&
+            <Text style={{color: 'red', alignSelf: 'center'}}>Please select class</Text>
+          }
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', width: '100%', marginTop: 0.05 * SCREEN_HEIGHT}}>
                     <Text style={{fontFamily: 'Montserrat-Regular', fontSize: 0.04 * SCREEN_WIDTH, color: 'white', alignSelf:'center'}}>Select days</Text>
             </View>

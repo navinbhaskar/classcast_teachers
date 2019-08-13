@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem} from 'native-base';
+import { Container, Header, Content, Button, Text, H1, Icon, H3, Footer , ListItem, Spinner} from 'native-base';
 import {View, Image, FlatList, TouchableNativeFeedback, Dimensions } from 'react-native';
 import axios from "axios";
 import {NavigationActions} from 'react-navigation';
@@ -26,19 +26,23 @@ constructor(props) {
     this._renderBatchList = this._renderBatchList.bind(this);
     this.state = {
     random: false,
-    batchList: []
+    batchList: [],
+    isReady: false
 }
 }
 
   componentDidMount() {
-    axios.get(`https://classcast-198812.appspot.com/teachersapp/batch_list`)
-        .then(function (response){
-            console.log("skja: "+JSON.stringify(response.data));
-            this.setState({batchList: response.data});
-        }.bind(this))
-        .catch(function (error) {
-            console.log('error');
-        });
+    this._navListener = this.props.navigation.addListener('didFocus', () => {
+      axios.get(`https://classcast-198812.appspot.com/teachersapp/batch_list`)
+          .then(function (response){
+              console.log("skja: "+JSON.stringify(response.data));
+              this.setState({batchList: response.data});
+              this.setState({ isReady: true });
+          }.bind(this))
+          .catch(function (error) {
+              console.log('error');
+          });
+    })
   }
   
 _renderBatchList({item, index}){
@@ -92,11 +96,16 @@ _renderBatchList({item, index}){
                 <Icon type="FontAwesome" name="plus"  active={false} style={{fontSize: 20, color: 'white', alignSelf:'center', marginLeft:0.05*SCREEN_WIDTH, flex:2}} /> 
                 <Text style={{fontFamily: 'Montserrat-Bold', fontSize: 0.04 * SCREEN_WIDTH, flex:4, color: 'white'}} >Add New Batch</Text>
             </ListItem>
-            <FlatList 
-                data={this.state.batchList}
-                extraData={this.state}
-                renderItem={this._renderBatchList}
-                />                                  
+            { this.state.isReady &&
+              <FlatList 
+                  data={this.state.batchList}
+                  extraData={this.state}
+                  renderItem={this._renderBatchList}
+                  />
+            }
+            { !this.state.isReady &&
+              <Spinner color='red' />
+            }                 
         </Content>            
       </Container>
     );
